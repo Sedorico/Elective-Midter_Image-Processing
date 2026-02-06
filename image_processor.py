@@ -56,6 +56,65 @@ def posterize(img, levels=4):
     return posterized.astype(np.uint8)
 
 
+# ============================================
+# NEW EFFECT #1: NEON BORDER
+# ============================================
+def neon_border_effect(img):
+    """Neon glowing border effect"""
+    img_copy = img.copy()
+    
+    gray = cv2.cvtColor(img_copy, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray, 50, 150)
+
+    kernel = np.ones((3, 3), np.uint8)
+    edges = cv2.dilate(edges, kernel, iterations=2)
+
+    neon_cyan = np.zeros_like(img_copy)
+    neon_cyan[:, :, 0] = 255
+    neon_cyan[:, :, 1] = 255
+
+    neon_magenta = np.zeros_like(img_copy)
+    neon_magenta[:, :, 0] = 255
+    neon_magenta[:, :, 2] = 255
+
+    blur_cyan = cv2.GaussianBlur(neon_cyan, (15, 15), 0)
+    blur_magenta = cv2.GaussianBlur(neon_magenta, (15, 15), 0)
+
+    edges_3channel = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+    edges_mask = edges_3channel.astype(float) / 255.0
+
+    result = img_copy.astype(float)
+    result += blur_cyan.astype(float) * edges_mask * 0.7
+    result += blur_magenta.astype(float) * edges_mask * 0.5
+
+    return np.clip(result, 0, 255).astype(np.uint8)
+
+
+# ============================================
+# NEW EFFECT #2: DREAMY SOFT FOCUS
+# ============================================
+def dreamy_soft_focus_effect(img):
+    """Dreamy soft focus effect"""
+    img_copy = img.copy()
+
+    soft = cv2.GaussianBlur(img_copy, (35, 35), 0)
+    soft = cv2.convertScaleAbs(soft, alpha=1.1, beta=20)
+
+    glow = cv2.GaussianBlur(soft, (51, 51), 0)
+
+    result = cv2.addWeighted(img_copy, 0.5, soft, 0.3, 0)
+    result = cv2.addWeighted(result, 0.8, glow, 0.2, 0)
+
+    hsv = cv2.cvtColor(result, cv2.COLOR_BGR2HSV).astype(float)
+    hsv[:, :, 1] *= 1.3
+    hsv[:, :, 2] *= 1.1
+
+    hsv[:, :, 1] = np.clip(hsv[:, :, 1], 0, 255)
+    hsv[:, :, 2] = np.clip(hsv[:, :, 2], 0, 255)
+
+    return cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+
+
 def process_images():
     """Process all images with multiple effects"""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -73,7 +132,6 @@ def process_images():
 
             print(f"\n✓ Processing: {filename}")
 
-            # Original effects
             clahe_img = clahe_process(img)
             cv2.imwrite(os.path.join(OUTPUT_DIR, f"{name}_clahe{ext}"), clahe_img)
             print(f"  → CLAHE saved")
@@ -90,15 +148,22 @@ def process_images():
             cv2.imwrite(os.path.join(OUTPUT_DIR, f"{name}_inverted{ext}"), inverted)
             print(f"  → Inverted saved")
 
-            # NEW: Pencil Sketch
             sketch = pencil_sketch(img)
             cv2.imwrite(os.path.join(OUTPUT_DIR, f"{name}_sketch{ext}"), sketch)
             print(f"  → Pencil Sketch saved")
 
-            # NEW: Posterize
             posterized = posterize(img, levels=4)
             cv2.imwrite(os.path.join(OUTPUT_DIR, f"{name}_posterize{ext}"), posterized)
             print(f"  → Posterize saved")
+
+            # NEW EFFECTS
+            neon = neon_border_effect(img)
+            cv2.imwrite(os.path.join(OUTPUT_DIR, f"{name}_neon{ext}"), neon)
+            print(f"  → Neon Border saved")
+
+            dreamy = dreamy_soft_focus_effect(img)
+            cv2.imwrite(os.path.join(OUTPUT_DIR, f"{name}_dreamy{ext}"), dreamy)
+            print(f"  → Dreamy Soft Focus saved")
 
     return True
 
