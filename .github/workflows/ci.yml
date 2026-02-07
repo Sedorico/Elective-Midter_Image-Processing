@@ -1,19 +1,21 @@
 name: Image Processing CI
 
 on:
-  workflow_dispatch:  # Allows manual run from GitHub Actions
   push:
-    branches: [ main, master, add-two-effects-jr ]
+    branches: [ '**' ]   # triggers on any branch
   pull_request:
-    branches: [ main, master ]
+    branches: [ '**' ]   # triggers on PRs for any branch
+  workflow_dispatch:      # allows manual runs
 
 jobs:
-  process-and-commit:
+  test-and-process:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # required for pushing commits
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -29,17 +31,16 @@ jobs:
       run: |
         python image_processor.py
 
-    - name: Commit new processed images
+    - name: Commit and push processed images
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add output_images/
-        git diff --cached --quiet || git commit -m "Auto-generate new processed images"
-        git push || echo "No new images to push"
+        git add output_images/*
+        git commit -m "Auto-generate new processed images" || echo "No changes to commit"
+        # push back to the branch that triggered the workflow
+        git push origin HEAD:${GITHUB_REF#refs/heads/}
 
-    - name: Upload processed images
-      uses: actions/upload-artifact@v4
-      with:
-        name: processed-images
-        path: output_images/
-        if-no-files-found: warn
+    - name: Display results
+      run: |
+        echo "Processing complete! Images committed to the branch."
+        ls -la output_images/
