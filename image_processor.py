@@ -1,137 +1,123 @@
-import cv2
 import os
+import cv2
 import numpy as np
+import pytest
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from image_processor import (
+    process_images,
+    clahe_process,
+    adaptive_threshold_process,
+    posterize,
+    sepia_process,
+    dream_soft_focus,
+    anime_effect
+)
 
 INPUT_DIR = "input_images"
 OUTPUT_DIR = "output_images"
 
 
-# ------------------------- Cleanup -------------------------
+# -------------------------
+# Basic tests
+# -------------------------
 
-def cleanup_output_directory():
-    """Delete all files in output directory before processing"""
-    if os.path.exists(OUTPUT_DIR):
-        # Delete everything inside except .gitkeep
-        for filename in os.listdir(OUTPUT_DIR):
-            if filename == '.gitkeep':
-                continue  # Keep .gitkeep file
-
-            file_path = os.path.join(OUTPUT_DIR, filename)
-            try:
-                if os.path.isfile(file_path):
-                    os.unlink(file_path)  # Delete file
-                    print(f"  🗑️ Deleted: {filename}")
-            except Exception as e:
-                print(f'❌ Failed to delete {file_path}. Reason: {e}')
-
-    # Recreate directory if needed
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    print("✅ Output directory cleaned\n")
+def test_process_images_runs():
+    """Run the processing function"""
+    result = process_images()
+    assert result is True, "process_images() did not return True"
+    print("✅ process_images() ran successfully")
 
 
-# ------------------------- Effects -------------------------
-
-# CLAHE
-def clahe_process(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    return clahe.apply(gray)
+def test_output_directory_exists():
+    """Check that the output folder exists"""
+    assert os.path.exists(OUTPUT_DIR), f"Output directory '{OUTPUT_DIR}' does not exist"
+    print("✅ Output directory exists")
 
 
-# Threshold
-def adaptive_threshold_process(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    return cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)[1]
+def test_output_images_created():
+    """Check that output images are created"""
+    files = [f for f in os.listdir(OUTPUT_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
+    assert len(files) > 0, "No images created in output directory"
+    print(f"✅ Number of output images: {len(files)}")
 
 
-# Posterize
-def posterize(img, levels=4):
-    levels = max(2, min(8, levels))
-    step = 256 // levels
-    return ((img // step) * step).astype(np.uint8)
+# -------------------------
+# Individual Function Tests
+# -------------------------
+
+class TestImageFunctions:
+    """Test individual image processing functions"""
+
+    def setup_method(self):
+        """Create test image before each test"""
+        self.test_image = np.random.randint(0, 255, (100, 100, 3), dtype=np.uint8)
+
+    def test_clahe_process(self):
+        """Test CLAHE enhancement"""
+        result = clahe_process(self.test_image)
+        assert result is not None
+        assert len(result.shape) == 2
+        print("✅ CLAHE function works")
+
+    def test_adaptive_threshold_process(self):
+        """Test adaptive threshold"""
+        result = adaptive_threshold_process(self.test_image)
+        assert result is not None
+        print("✅ Adaptive Threshold function works")
+
+    def test_posterize(self):
+        """Test posterize effect"""
+        result = posterize(self.test_image, levels=4)
+        assert result is not None
+        assert result.shape == self.test_image.shape
+        assert result.dtype == np.uint8
+        print("✅ Posterize function works")
+
+    def test_sepia_process(self):
+        """Test sepia effect"""
+        result = sepia_process(self.test_image)
+        assert result is not None
+        assert result.shape == self.test_image.shape
+        print("✅ Sepia function works")
+
+    def test_dream_soft_focus(self):
+        """Test dream soft focus effect"""
+        result = dream_soft_focus(self.test_image)
+        assert result is not None
+        assert result.shape == self.test_image.shape
+        print("✅ Dream Soft Focus function works")
+
+    def test_anime_effect(self):
+        """Test anime effect"""
+        result = anime_effect(self.test_image)
+        assert result is not None
+        assert result.shape == self.test_image.shape
+        print("✅ Anime Effect function works")
 
 
-# Sepia Effect
-def sepia_process(img):
-    img_float = img.astype(np.float32)
-    sepia_filter = np.array([
-        [0.272, 0.534, 0.131],
-        [0.349, 0.686, 0.168],
-        [0.393, 0.769, 0.189]
-    ])
-    sepia_img = cv2.transform(img_float, sepia_filter)
-    return np.clip(sepia_img, 0, 255).astype(np.uint8)
+# -------------------------
+# Output File Tests
+# -------------------------
+
+def test_all_effect_files_created():
+    """Check that all 6 effects are created for each input image"""
+    input_files = [f for f in os.listdir(INPUT_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
+
+    expected_effects = ["_posterize", "_anime", "_sepia", "_dream", "_clahe", "_threshold"]
+
+    for input_file in input_files:
+        name, ext = os.path.splitext(input_file)
+
+        for effect in expected_effects:
+            expected_file = f"{name}{effect}{ext}"
+            output_path = os.path.join(OUTPUT_DIR, expected_file)
+            assert os.path.exists(output_path), f"Missing output: {expected_file}"
+
+    print("✅ All 6 effects created for each input image")
 
 
-# Dream Soft Focus (blur + glow)
-def dream_soft_focus(img):
-    blurred = cv2.GaussianBlur(img, (21, 21), 0)
-    return cv2.addWeighted(img, 0.7, blurred, 0.3, 0)
-
-
-# Anime Effect (cartoon style)
-def anime_effect(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    blur = cv2.medianBlur(gray, 5)
-    edges = cv2.adaptiveThreshold(blur, 255,
-                                  cv2.ADAPTIVE_THRESH_MEAN_C,
-                                  cv2.THRESH_BINARY, 9, 9)
-    color = cv2.bilateralFilter(img, 9, 250, 250)
-    return cv2.bitwise_and(color, color, mask=edges)
-
-
-# ------------------------- Main Processing -------------------------
-
-def process_images():
-    # CLEANUP FIRST - Delete old outputs!
-    cleanup_output_directory()
-
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-
-    effects = {
-        "_posterize": posterize,
-        "_anime": anime_effect,
-        "_sepia": sepia_process,
-        "_dream": dream_soft_focus,
-        "_clahe": clahe_process,
-        "_threshold": adaptive_threshold_process
-    }
-
-    for filename in os.listdir(INPUT_DIR):
-        if not filename.lower().endswith((".png", ".jpg", ".jpeg")):
-            continue
-
-        img_path = os.path.join(INPUT_DIR, filename)
-        img = cv2.imread(img_path)
-        if img is None:
-            print(f"⚠ Could not read: {filename}")
-            continue
-
-        name, ext = os.path.splitext(filename)
-        print(f"\n✓ Processing: {filename}")
-
-        # Process each effect
-        for suffix, func in effects.items():
-            output_file = os.path.join(OUTPUT_DIR, f"{name}{suffix}{ext}")
-
-            if suffix in ["_posterize"]:
-                result = func(img, levels=4)
-            else:
-                result = func(img)
-
-            cv2.imwrite(output_file, result)
-            print(f"  → {suffix[1:].capitalize()} saved")
-
-    return True
-
-
-# ------------------------- Run -------------------------
 if __name__ == "__main__":
-    print("=" * 50)
-    print("IMAGE PROCESSING STARTED")
-    print("=" * 50)
-    process_images()
-    print("=" * 50)
-    print("✓ Image processing completed!")
-    print(f"✓ Check '{OUTPUT_DIR}' folder for results")
-    print("=" * 50)
+    pytest.main([__file__, "-v"])
