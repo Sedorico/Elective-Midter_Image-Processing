@@ -2,7 +2,7 @@ name: Image Processing CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, commit-carlo ]  # ← Added commit-carlo
   pull_request:
     branches: [ main, master ]
 
@@ -24,13 +24,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Clean output directory (delete old outputs)
+      run: |
+        echo "🗑️ Cleaning output directory..."
+        rm -rf output_images/*
+        echo "✅ Old outputs deleted"
+
     - name: Ensure output directory exists
       run: |
         mkdir -p output_images
         echo "Output directory ready"
 
-    - name: Process images
+    - name: Process images with 6 effects
       run: |
+        echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold"
         python image_processor.py
 
     - name: Run tests & display technique summary
