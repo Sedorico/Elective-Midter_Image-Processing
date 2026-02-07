@@ -7,37 +7,24 @@ OUTPUT_DIR = "output_images"
 
 # ------------------------- Effects -------------------------
 
+# CLAHE
 def clahe_process(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     return clahe.apply(gray)
 
-def gaussian_blur_process(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
-    return cv2.GaussianBlur(gray, (5, 5), 0)
-
+# Threshold
 def adaptive_threshold_process(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    return cv2.adaptiveThreshold(blurred, 255,
-                                 cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                 cv2.THRESH_BINARY, 11, 2)
-
-def invert_colors(img):
-    return cv2.bitwise_not(img)
-
-def pencil_sketch(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    inverted = cv2.bitwise_not(gray)
-    blurred = cv2.GaussianBlur(inverted, (21, 21), 0)
-    inverted_blur = cv2.bitwise_not(blurred)
-    return cv2.divide(gray, inverted_blur, scale=256.0)
+    return cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)[1]
 
+# Posterize
 def posterize(img, levels=4):
     levels = max(2, min(8, levels))
     step = 256 // levels
     return ((img // step) * step).astype(np.uint8)
 
+# Sepia Effect
 def sepia_process(img):
     img_float = img.astype(np.float32)
     sepia_filter = np.array([
@@ -48,19 +35,33 @@ def sepia_process(img):
     sepia_img = cv2.transform(img_float, sepia_filter)
     return np.clip(sepia_img, 0, 255).astype(np.uint8)
 
+# Dream Soft Focus (blur + glow)
+def dream_soft_focus(img):
+    blurred = cv2.GaussianBlur(img, (21, 21), 0)
+    return cv2.addWeighted(img, 0.7, blurred, 0.3, 0)
+
+# Anime Effect (cartoon style)
+def anime_effect(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    blur = cv2.medianBlur(gray, 5)
+    edges = cv2.adaptiveThreshold(blur, 255,
+                                  cv2.ADAPTIVE_THRESH_MEAN_C,
+                                  cv2.THRESH_BINARY, 9, 9)
+    color = cv2.bilateralFilter(img, 9, 250, 250)
+    return cv2.bitwise_and(color, color, mask=edges)
+
 # ------------------------- Main Processing -------------------------
 
 def process_images():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     effects = {
-        "_clahe": clahe_process,
-        "_blurred": gaussian_blur_process,
-        "_threshold": adaptive_threshold_process,
-        "_inverted": invert_colors,
-        "_sketch": pencil_sketch,
         "_posterize": posterize,
-        "_sepia": sepia_process
+        "_anime": anime_effect,
+        "_sepia": sepia_process,
+        "_dream": dream_soft_focus,
+        "_clahe": clahe_process,
+        "_threshold": adaptive_threshold_process
     }
 
     for filename in os.listdir(INPUT_DIR):
