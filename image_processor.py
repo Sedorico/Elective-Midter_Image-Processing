@@ -2,8 +2,11 @@ import cv2
 import os
 import numpy as np
 
-INPUT_DIR = "input_images"
-OUTPUT_DIR = "output_images"
+# ------------------------- Absolute Paths -------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+INPUT_DIR = os.path.join(BASE_DIR, "input_images")
+OUTPUT_DIR = os.path.join(BASE_DIR, "output_images")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ------------------------- Effects -------------------------
 
@@ -44,17 +47,17 @@ def dream_soft_focus(img):
 def anime_effect(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blur = cv2.medianBlur(gray, 5)
-    edges = cv2.adaptiveThreshold(blur, 255,
-                                  cv2.ADAPTIVE_THRESH_MEAN_C,
-                                  cv2.THRESH_BINARY, 9, 9)
+    edges = cv2.adaptiveThreshold(
+        blur, 255,
+        cv2.ADAPTIVE_THRESH_MEAN_C,
+        cv2.THRESH_BINARY, 9, 9
+    )
     color = cv2.bilateralFilter(img, 9, 250, 250)
     return cv2.bitwise_and(color, color, mask=edges)
 
 # ------------------------- Main Processing -------------------------
 
 def process_images():
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-
     effects = {
         "_posterize": posterize,
         "_anime": anime_effect,
@@ -78,7 +81,10 @@ def process_images():
         print(f"\n✓ Processing: {filename}")
 
         # Check if outputs already exist
-        all_exist = all(os.path.exists(os.path.join(OUTPUT_DIR, f"{name}{effect}{ext}")) for effect in effects)
+        all_exist = all(
+            os.path.exists(os.path.join(OUTPUT_DIR, f"{name}{effect}{ext}")) 
+            for effect in effects
+        )
         if all_exist:
             print(f"  → All effects already exist for {filename}, skipping...")
             continue
@@ -96,7 +102,7 @@ def process_images():
                 result = func(img)
 
             cv2.imwrite(output_file, result)
-            print(f"  → {suffix[1:].capitalize()} saved")
+            print(f"  → {suffix[1:].capitalize()} saved at {output_file}")
 
     return True
 
