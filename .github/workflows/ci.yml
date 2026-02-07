@@ -2,7 +2,7 @@ name: Image Processing CI
 
 on:
   push:
-    branches: [ main, master, commit-carlo ]  # ← Added commit-carlo
+    branches: [ main, master, commit-carlo ]
   pull_request:
     branches: [ main, master ]
 
@@ -51,6 +51,14 @@ jobs:
         ls -lh output_images/ || echo "No images processed"
         echo ""
         echo "Total files: $(ls output_images/ | wc -l)"
+
+    - name: Commit and push processed images back to GitHub
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add output_images/
+        git diff --staged --quiet || git commit -m "🤖 Auto-update: Processed images from workflow"
+        git push origin commit-carlo
 
     - name: Upload processed images
       uses: actions/upload-artifact@v4
