@@ -1,6 +1,7 @@
 name: Image Processing CI
 
 on:
+  workflow_dispatch:   # Allows you to manually click "Run workflow"
   push:
     branches: [ main, master ]
   pull_request:
@@ -32,14 +33,14 @@ jobs:
       run: |
         python -m pytest -v -s tests/test_image_processing.py
 
-    - name: Commit processed images
+    - name: Commit new processed images
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add output_images/
-        # Commit only if there are new changes
-        git diff --cached --quiet || git commit -m "Auto-generate processed images"
-        git push || echo "No changes to push"
+        # Only commit if there are new files
+        git diff --cached --quiet || git commit -m "Auto-generate new processed images"
+        git push || echo "No new images to push"
 
     - name: Upload processed images
       uses: actions/upload-artifact@v4
