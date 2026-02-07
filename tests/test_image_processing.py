@@ -4,15 +4,14 @@ import pytest
 INPUT_DIR = "input_images"
 OUTPUT_DIR = "output_images"
 
-# List of all effects
+# List of all effects (updated)
 EFFECTS = [
-    "_clahe",
-    "_blurred",
-    "_threshold",
-    "_inverted",
-    "_sketch",
     "_posterize",
-    "_sepia"
+    "_anime",
+    "_sepia",
+    "_dream",
+    "_clahe",
+    "_threshold"
 ]
 
 def test_techniques_summary():
