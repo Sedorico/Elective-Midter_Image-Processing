@@ -9,10 +9,14 @@ on:
 jobs:
   test-and-process:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # ← ADD THIS
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # ← ADD THIS
 
     - name: Set up Python
       uses: actions/setup-python@v5
