@@ -10,13 +10,14 @@ jobs:
   test-and-process:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # ← ADD THIS
+      contents: write
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}  # ← ADD THIS
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -60,6 +61,7 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
+        git pull origin commit-carlo --rebase
         git add output_images/
         git diff --staged --quiet || git commit -m "🤖 Auto-update: Processed images from workflow"
         git push origin HEAD:commit-carlo
