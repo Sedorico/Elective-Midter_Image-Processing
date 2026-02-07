@@ -10,24 +10,20 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ------------------------- Effects -------------------------
 
-# CLAHE
 def clahe_process(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     return clahe.apply(gray)
 
-# Threshold
 def adaptive_threshold_process(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)[1]
 
-# Posterize
 def posterize(img, levels=4):
     levels = max(2, min(8, levels))
     step = 256 // levels
     return ((img // step) * step).astype(np.uint8)
 
-# Sepia Effect
 def sepia_process(img):
     img_float = img.astype(np.float32)
     sepia_filter = np.array([
@@ -38,12 +34,10 @@ def sepia_process(img):
     sepia_img = cv2.transform(img_float, sepia_filter)
     return np.clip(sepia_img, 0, 255).astype(np.uint8)
 
-# Dream Soft Focus (blur + glow)
 def dream_soft_focus(img):
     blurred = cv2.GaussianBlur(img, (21, 21), 0)
     return cv2.addWeighted(img, 0.7, blurred, 0.3, 0)
 
-# Anime Effect (cartoon style)
 def anime_effect(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blur = cv2.medianBlur(gray, 5)
@@ -67,6 +61,8 @@ def process_images():
         "_threshold": adaptive_threshold_process
     }
 
+    new_files_created = 0
+
     for filename in os.listdir(INPUT_DIR):
         if not filename.lower().endswith((".png", ".jpg", ".jpeg")):
             continue
@@ -80,31 +76,27 @@ def process_images():
         name, ext = os.path.splitext(filename)
         print(f"\n✓ Processing: {filename}")
 
-        # Check if outputs already exist
-        all_exist = all(
-            os.path.exists(os.path.join(OUTPUT_DIR, f"{name}{effect}{ext}")) 
-            for effect in effects
-        )
-        if all_exist:
-            print(f"  → All effects already exist for {filename}, skipping...")
-            continue
-
-        # Process each effect individually
         for suffix, func in effects.items():
             output_file = os.path.join(OUTPUT_DIR, f"{name}{suffix}{ext}")
             if os.path.exists(output_file):
-                print(f"  → {suffix[1:].capitalize()} already exists, skipping...")
+                print(f"  → {suffix[1:].capitalize()} already exists, skipped")
                 continue
 
-            if suffix in ["_posterize"]:
+            if suffix == "_posterize":
                 result = func(img, levels=4)
             else:
                 result = func(img)
 
             cv2.imwrite(output_file, result)
             print(f"  → {suffix[1:].capitalize()} saved at {output_file}")
+            new_files_created += 1
 
-    return True
+    if new_files_created == 0:
+        print("\n⚠ No new images created, all outputs already exist")
+    else:
+        print(f"\n✓ Total new images created: {new_files_created}")
+
+    return new_files_created
 
 # ------------------------- Run -------------------------
 if __name__ == "__main__":
