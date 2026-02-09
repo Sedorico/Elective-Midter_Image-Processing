@@ -4,15 +4,12 @@ Automated image processing application with multiple filter effects using Python
 
 ## 🎨 Image Processing Effects
 
-### Original Effects:
-1. **CLAHE (Contrast Limited Adaptive Histogram Equalization)** - Enhances image contrast
-2. **Gaussian Blur** - Applies blur effect
-3. **Adaptive Threshold** - Binary threshold with local adaptation
-4. **Invert Colors** - Inverts image colors
-
-### New Effects:
-5. **Pencil Sketch** - Artistic pencil drawing effect
-6. **Posterize** - Reduces colors for pop-art style
+1. **Posterize** - Reduces colors for a pop-art style
+2. **Anime** - Transforms images into an anime-style appearance
+3. **Sepia Effect** - Applies a warm, vintage tone
+4. **Dream Soft Focus** - Creates a soft, glowing dream-like look
+5. **CLAHE (Contrast Limited Adaptive Histogram Equalization)** - Enhances image contrast
+6. **Adaptive Threshold** - Converts images into binary format using local adaptation
 
 ## 🛠️ Technologies Used
 
@@ -61,12 +58,13 @@ random/
 ```
 
 3. **Check results** in `output_images/` folder:
+   - `filename_posterize.jpg` - Posterize effect
+   - `filename_anime.jpg` - Anime-style effect
+   - `filename_sepia.jpg` - Sepia effect
+   - `filename_dream_soft_focus.jpg` - Dream soft focus effect
    - `filename_clahe.jpg` - CLAHE enhanced
-   - `filename_blurred.jpg` - Gaussian blur
    - `filename_threshold.jpg` - Adaptive threshold
-   - `filename_inverted.jpg` - Inverted colors
-   - `filename_sketch.jpg` - Pencil sketch
-   - `filename_posterize.jpg` - Posterized
+     
 
 ## 🔄 GitHub Actions CI/CD
 
@@ -85,10 +83,10 @@ The pipeline automatically runs on every push:
 
 ## 👥 Group Members
 
-- [Member 1 Name] - [Role]
-- [Member 2 Name] - [Role]
-- [Member 3 Name] - [Role]
-- [Member 4 Name] - [Role]
+- [KARL CEDRIC DEL CARMEN] - [DEV OPS ENGINEER]
+- [CARLO ESTACIO] - [DOCUMENTER/PRESENTER]
+- [JHAN REY MAHSAKAY] - [IMAGE PROCESSING LEAD]
+- [SEAN WENDEL VILLAMAYOR] - [TESTER]
 
 ---
 
