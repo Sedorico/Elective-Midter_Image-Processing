@@ -2,27 +2,27 @@ name: Image Processing CI
 
 on:
   push:
-    branches: [main, master]  # Changed branch name to `main`
+    branches: [main, master]  # branch name lang
   pull_request:
-    branches: [main, master]  # Pull request triggers for `main` or `master`
+    branches: [main, master]  # Pull request triggers  for main brach lang
 
 jobs:
   test-and-process:
-    runs-on: ubuntu-latest  # Specifies the environment to run the job on (Ubuntu)
+    runs-on: ubuntu-latest  #  i run yung latest ubuntu
     permissions:
-      contents: write  # Permission to write to the repository
+      contents: write  # Permission lamg para makapag write
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token to interact with repository
-        fetch-depth: 0  # Fetch the full history for the repository (needed for checking changes)
+        token: ${{ secrets.GITHUB_TOKEN }}  #  about sa github token lang for repository
+        fetch-depth: 0  # Fetch the full history for the repository (kelangan para makita yung mga binago)
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'  # Specify Python version for the environment
+        python-version: '3.10'  # para makita yung python version
 
     - name: Install dependencies
       run: |
@@ -32,30 +32,30 @@ jobs:
     - name: Clean output directory (delete old outputs)
       run: |
         echo "🗑️ Cleaning output directory..."
-        rm -rf output_images/*  # Remove any existing output images
+        rm -rf output_images/*  # Remove lang yung existing na laman nung output_images
         echo "✅ Old outputs deleted"
 
     - name: Ensure output directory exists
       run: |
-        mkdir -p output_images  # Make sure the output directory exists before saving files
+        mkdir -p output_images  # check if meron na output images folder
         echo "Output directory ready"
 
     - name: Process images with 7 effects
       run: |
         echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold, Mirror"
-        python image_processor.py  # This will process the images with the specified effects (including mirror)
+        python image_processor.py  # eto yung mag proccess nung mga image gamit yung techniques
 
     - name: Run tests & display technique summary
       run: |
         echo "=== Running Technique Summary Tests ==="
-        python -m pytest -v -s tests/test_image_processing.py  # Run the test script to check if effects are applied correctly
+        python -m pytest -v -s tests/test_image_processing.py  #  run lang yung test script para ma check if tama yung mga techniques
 
     - name: Display processing results
       run: |
         echo "=== Processed Images ==="
-        ls -lh output_images/ || echo "No images processed"  # List the files in the output directory to confirm image generation
+        ls -lh output_images/ || echo "No images processed"  #  naka list yung mga files sa output folder para ma check 
         echo ""
-        echo "Total files: $(ls output_images/ | wc -l)"  # Count the number of processed images
+        echo "Total files: $(ls output_images/ | wc -l)"  # bilangin  yung mga na process na images
 
     - name: Commit and push processed images back to GitHub
       run: |
