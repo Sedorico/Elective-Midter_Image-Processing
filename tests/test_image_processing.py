@@ -14,6 +14,7 @@ EFFECTS = [
     "_threshold"
 ]
 
+
 def test_techniques_summary():
     """Check each technique, report counts and missing files, always print summary"""
 
@@ -34,14 +35,17 @@ def test_techniques_summary():
     for effect in EFFECTS:
         present_count = 0
         missing_files = []
+
         for input_file in input_files:
             name, ext = os.path.splitext(input_file)
             expected_file = f"{name}{effect}{ext}"
             output_path = os.path.join(OUTPUT_DIR, expected_file)
+
             if os.path.exists(output_path):
                 present_count += 1
             else:
                 missing_files.append(expected_file)
+
         technique_results[effect] = {
             "present": present_count,
             "missing": missing_files
@@ -59,11 +63,12 @@ def test_techniques_summary():
             print(f"✅ {effect[1:]} PASSED ({data['present']}/{len(input_files)} images present)")
             total_passed += 1
         else:
-            print(f"❌ {effect[1:]} FAILED ({data['present']}/{len(input_files)} images present, {len(data['missing'])} missing)")
+            print(
+                f"❌ {effect[1:]} FAILED ({data['present']}/{len(input_files)} images present, {len(data['missing'])} missing)")
             print(f"   Missing files: {', '.join(data['missing'])}")
             total_failed += 1
 
     print(f"\nTotal Techniques Passed: {total_passed}/{len(EFFECTS)}, Total Failed: {total_failed}/{len(EFFECTS)}\n")
 
-    # Fail the test if any technique has missing images
+    # Fail the test if any technique has missing output images
     assert total_failed == 0, "Some techniques are missing output images!"
