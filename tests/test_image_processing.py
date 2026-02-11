@@ -7,7 +7,7 @@ INPUT_DIR = "input_images"  # The directory where the original images are stored
 OUTPUT_DIR = "output_images"  # The directory where the processed images will be saved
 
 # ------------------------- List of Effects -------------------------
-# List of image processing effects to check, including the new "mirror" effect
+# List of image processing effects to check
 EFFECTS = [
     "_posterize",  # Effect to posterize the image
     "_anime",      # Effect to create an anime/cartoon-like image
