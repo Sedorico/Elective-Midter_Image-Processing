@@ -10,7 +10,7 @@ jobs:
   test-and-process:
     runs-on: ubuntu-latest  #  i run yung latest ubuntu
     permissions:
-      contents: write  # Permission lamg para makapag write
+      contents: write  # Permission lang para makapag write
 
     steps:
     - name: Checkout code
