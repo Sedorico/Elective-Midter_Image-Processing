@@ -4,15 +4,15 @@ Automated image processing application with multiple filter effects using Python
 
 ## 🎨 Image Processing Effects
 
-### Original Effects:
-1. **CLAHE (Contrast Limited Adaptive Histogram Equalization)** - Enhances image contrast
-2. **Gaussian Blur** - Applies blur effect
-3. **Adaptive Threshold** - Binary threshold with local adaptation
-4. **Invert Colors** - Inverts image colors
+### Effects:
+1. **Posterize** – Reduces number of colors to create a flat, poster-like effect
+2. **Anime Effect** – Stylizes image to look like anime/cartoon art
+3. **Sepia Effect** – Applies warm brown tone for vintage look
+4. **Dream Soft Focus** – Adds soft blur for dreamy appearance
+5. **CLAHE** – Enhances image contrast and details
+6. **Threshold** – Converts image to black and white based on intensity
+7. **Mirror Effect** – Flips image horizontally to create reflection
 
-### New Effects:
-5. **Pencil Sketch** - Artistic pencil drawing effect
-6. **Posterize** - Reduces colors for pop-art style
 
 ## 🛠️ Technologies Used
 
