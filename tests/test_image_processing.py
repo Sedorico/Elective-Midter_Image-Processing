@@ -4,14 +4,16 @@ import pytest
 INPUT_DIR = "input_images"
 OUTPUT_DIR = "output_images"
 
-# List of all effects (updated)
+# Updated list of all effects (including the new ones)
 EFFECTS = [
     "_posterize",
     "_anime",
     "_sepia",
     "_dream",
     "_clahe",
-    "_threshold"
+    "_threshold",
+    "_retro",    # Added Retro filter
+    "_mirror"    # Added Mirror effect
 ]
 
 
