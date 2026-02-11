@@ -40,10 +40,10 @@ jobs:
         mkdir -p output_images
         echo "Output directory ready"
 
-    - name: Process images with 8 effects
+    - name: Process images with 7 effects
       run: |
-        echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold, Retro, Mirror"
-        python image_processor.py  # Ensure the script includes all 8 effects now
+        echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold, Mirror"
+        python image_processor.py  # Ensure the script includes all 7 effects now
 
     - name: Run tests & display technique summary
       run: |
