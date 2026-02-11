@@ -12,49 +12,35 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ------------------------- Effects -------------------------
 
-def clahe_process(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    return clahe.apply(gray)
+# Existing effects ...
+
+def retro_filter(img):
+    # Convert to a more vintage look
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB for color manipulation
+    img = cv2.addWeighted(img, 0.6, np.zeros_like(img), 0.4, 50)  # Add a warm tint to the image
+
+    # Add noise
+    noise = np.random.normal(0, 10, img.shape).astype(np.uint8)
+    img = cv2.add(img, noise)
+
+    # Apply vignette effect
+    rows, cols = img.shape[:2]
+    X_resultant_kernel = cv2.getGaussianKernel(cols, cols / 5)
+    Y_resultant_kernel = cv2.getGaussianKernel(rows, rows / 5)
+    resultant_kernel = Y_resultant_kernel * X_resultant_kernel.T
+    mask = 255 * resultant_kernel / np.linalg.norm(resultant_kernel)
+    img = cv2.filter2D(img, -1, mask)
+
+    return img
 
 
-def adaptive_threshold_process(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    return cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)[1]
+def mirror_effect(img):
+    # Create the mirror effect by flipping the image horizontally
+    mirrored_img = cv2.flip(img, 1)
 
-
-def posterize(img, levels=4):
-    levels = max(2, min(8, levels))
-    step = 256 // levels
-    return ((img // step) * step).astype(np.uint8)
-
-
-def sepia_process(img):
-    img_float = img.astype(np.float32)
-    sepia_filter = np.array([
-        [0.272, 0.534, 0.131],
-        [0.349, 0.686, 0.168],
-        [0.393, 0.769, 0.189]
-    ])
-    sepia_img = cv2.transform(img_float, sepia_filter)
-    return np.clip(sepia_img, 0, 255).astype(np.uint8)
-
-
-def dream_soft_focus(img):
-    blurred = cv2.GaussianBlur(img, (21, 21), 0)
-    return cv2.addWeighted(img, 0.7, blurred, 0.3, 0)
-
-
-def anime_effect(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    blur = cv2.medianBlur(gray, 5)
-    edges = cv2.adaptiveThreshold(
-        blur, 255,
-        cv2.ADAPTIVE_THRESH_MEAN_C,
-        cv2.THRESH_BINARY, 9, 9
-    )
-    color = cv2.bilateralFilter(img, 9, 250, 250)
-    return cv2.bitwise_and(color, color, mask=edges)
+    # Concatenate the original image and mirrored image side by side
+    mirrored_image = np.concatenate((img, mirrored_img), axis=1)
+    return mirrored_image
 
 
 # ------------------------- Main Processing -------------------------
@@ -66,7 +52,9 @@ def process_images():
         "_sepia": sepia_process,
         "_dream": dream_soft_focus,
         "_clahe": clahe_process,
-        "_threshold": adaptive_threshold_process
+        "_threshold": adaptive_threshold_process,
+        "_retro": retro_filter,
+        "_mirror": mirror_effect
     }
 
     new_files_created = 0
