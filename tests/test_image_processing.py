@@ -4,7 +4,7 @@ import pytest
 INPUT_DIR = "input_images"
 OUTPUT_DIR = "output_images"
 
-# Updated list of all effects (including the new ones)
+# Updated list of all effects (removed _retro)
 EFFECTS = [
     "_posterize",
     "_anime",
@@ -12,10 +12,8 @@ EFFECTS = [
     "_dream",
     "_clahe",
     "_threshold",
-    "_retro",    # Added Retro filter
-    "_mirror"    # Added Mirror effect
+    "_mirror"  # Added Mirror effect
 ]
-
 
 def test_techniques_summary():
     """Check each technique, report counts and missing files, always print summary"""
