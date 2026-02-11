@@ -24,9 +24,26 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Ensure output directory exists
+      run: |
+        mkdir -p output_images
+        echo "Output directory ready"
+
     - name: Process images
       run: |
         python image_processor.py
+
+    - name: Run tests & display technique summary
+      run: |
+        echo "=== Running Technique Summary Tests ==="
+        python -m pytest -v -s tests/test_image_processing.py
+
+    - name: Display processing results
+      run: |
+        echo "=== Processed Images ==="
+        ls -lh output_images/ || echo "No images processed"
+        echo ""
+        echo "Total files: $(ls output_images/ | wc -l)"
 
     - name: Upload processed images
       uses: actions/upload-artifact@v4
@@ -34,8 +51,3 @@ jobs:
         name: processed-images
         path: output_images/
         if-no-files-found: warn
-
-    - name: Display results
-      run: |
-        echo "Processing complete!"
-        ls -la output_images/
