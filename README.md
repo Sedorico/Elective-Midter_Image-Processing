@@ -70,13 +70,6 @@ random/
    * `filename_threshold.jpg` - Black & white threshold
    * `filename_mirror.jpg` - Mirror (horizontal flip) effect
 
-   
-## Git Hygiene (Important)
-
-Do not commit virtual environments.
-
-This repository’s `.gitignore` ignores `.venv/`, `venv/`, and `env/` to prevent accidentally pushing large binary files (which GitHub will reject).
-
 
 ## 🔄 GitHub Actions CI/CD
 
@@ -95,10 +88,10 @@ The pipeline automatically runs on every push:
 
 ## 👥 Group Members
 
-- [Member 1 Name] - [Role]
-- [Member 2 Name] - [Role]
-- [Member 3 Name] - [Role]
-- [Member 4 Name] - [Role]
+* **Sean Villamayor** – Image Processing Lead
+* **Karl Del Carmen** – DevOps Engineer
+* **Jhan Rhey Magsakay** – Tester
+* **Carlo Estacio** – Documenter/Presenter
 
 ---
 
