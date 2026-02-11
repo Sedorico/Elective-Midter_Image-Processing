@@ -76,7 +76,6 @@ Do not commit virtual environments.
 
 This repository’s `.gitignore` ignores `.venv/`, `venv/`, and `env/` to prevent accidentally pushing large binary files (which GitHub will reject).
 
-
 ## 🔄 GitHub Actions CI/CD
 
 The pipeline automatically runs on every push:

@@ -2,17 +2,22 @@ name: Image Processing CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, commit-carlo ]
   pull_request:
     branches: [ main, master ]
 
 jobs:
   test-and-process:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -24,13 +29,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Clean output directory (delete old outputs)
+      run: |
+        echo "🗑️ Cleaning output directory..."
+        rm -rf output_images/*
+        echo "✅ Old outputs deleted"
+
     - name: Ensure output directory exists
       run: |
         mkdir -p output_images
         echo "Output directory ready"
 
-    - name: Process images
+    - name: Process images with 6 effects
       run: |
+        echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold"
         python image_processor.py
 
     - name: Run tests & display technique summary
@@ -44,6 +56,14 @@ jobs:
         ls -lh output_images/ || echo "No images processed"
         echo ""
         echo "Total files: $(ls output_images/ | wc -l)"
+
+    - name: Commit and push processed images back to GitHub
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add output_images/
+        git diff --staged --quiet || git commit -m "🤖 Auto-update: Processed images from workflow"
+        git push origin HEAD:commit-carlo
 
     - name: Upload processed images
       uses: actions/upload-artifact@v4
