@@ -4,11 +4,11 @@ import numpy as np
 
 # ------------------------- Absolute Paths -------------------------
 # Define base directory and create input and output directories
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the current file's path
-INPUT_DIR = os.path.join(BASE_DIR, "input_images")     # Input folder where original images are stored
-OUTPUT_DIR = os.path.join(BASE_DIR, "output_images")   # Output folder where processed images will be saved
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  #  kunin yung current na path
+INPUT_DIR = os.path.join(BASE_DIR, "input_images")     #  input folder kung saan nakalagay yung fresh images
+OUTPUT_DIR = os.path.join(BASE_DIR, "output_images")   # Output folder dito na save yung na lagyan ng techniques
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)  # Create the output directory if it doesn't exist
+os.makedirs(OUTPUT_DIR, exist_ok=True)  # gagawa output directory if hindi pa nagagawa
 
 # ------------------------- Effects -------------------------
 
