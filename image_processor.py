@@ -6,7 +6,9 @@ import numpy as np
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INPUT_DIR = os.path.join(BASE_DIR, "input_images")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output_images")
+
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 
 # ------------------------- Effects -------------------------
 
@@ -15,14 +17,17 @@ def clahe_process(img):
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     return clahe.apply(gray)
 
+
 def adaptive_threshold_process(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)[1]
+
 
 def posterize(img, levels=4):
     levels = max(2, min(8, levels))
     step = 256 // levels
     return ((img // step) * step).astype(np.uint8)
+
 
 def sepia_process(img):
     img_float = img.astype(np.float32)
@@ -34,9 +39,11 @@ def sepia_process(img):
     sepia_img = cv2.transform(img_float, sepia_filter)
     return np.clip(sepia_img, 0, 255).astype(np.uint8)
 
+
 def dream_soft_focus(img):
     blurred = cv2.GaussianBlur(img, (21, 21), 0)
     return cv2.addWeighted(img, 0.7, blurred, 0.3, 0)
+
 
 def anime_effect(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -48,6 +55,7 @@ def anime_effect(img):
     )
     color = cv2.bilateralFilter(img, 9, 250, 250)
     return cv2.bitwise_and(color, color, mask=edges)
+
 
 # ------------------------- Main Processing -------------------------
 
@@ -69,6 +77,7 @@ def process_images():
 
         img_path = os.path.join(INPUT_DIR, filename)
         img = cv2.imread(img_path)
+
         if img is None:
             print(f"⚠ Could not read: {filename}")
             continue
@@ -78,6 +87,7 @@ def process_images():
 
         for suffix, func in effects.items():
             output_file = os.path.join(OUTPUT_DIR, f"{name}{suffix}{ext}")
+
             if os.path.exists(output_file):
                 print(f"  → {suffix[1:].capitalize()} already exists, skipped")
                 continue
@@ -96,9 +106,11 @@ def process_images():
     else:
         print(f"\n✓ Total new images created: {new_files_created}")
 
-    return new_files_created
+    return True
+
 
 # ------------------------- Run -------------------------
+
 if __name__ == "__main__":
     print("=" * 50)
     print("IMAGE PROCESSING STARTED")
