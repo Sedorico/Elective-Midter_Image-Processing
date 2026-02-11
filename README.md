@@ -61,12 +61,15 @@ random/
 ```
 
 3. **Check results** in `output_images/` folder:
-   - `filename_clahe.jpg` - CLAHE enhanced
-   - `filename_blurred.jpg` - Gaussian blur
-   - `filename_threshold.jpg` - Adaptive threshold
-   - `filename_inverted.jpg` - Inverted colors
-   - `filename_sketch.jpg` - Pencil sketch
-   - `filename_posterize.jpg` - Posterized
+
+   * `filename_posterize.jpg` - Posterize effect
+   * `filename_anime.jpg` - Anime style effect
+   * `filename_sepia.jpg` - Sepia vintage effect
+   * `filename_dreamsoft.jpg` - Dream soft focus effect
+   * `filename_clahe.jpg` - CLAHE contrast enhancement
+   * `filename_threshold.jpg` - Black & white threshold
+   * `filename_mirror.jpg` - Mirror (horizontal flip) effect
+
 
 ## 🔄 GitHub Actions CI/CD
 
