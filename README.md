@@ -4,15 +4,15 @@ Automated image processing application with multiple filter effects using Python
 
 ## 🎨 Image Processing Effects
 
-### Original Effects:
-1. **CLAHE (Contrast Limited Adaptive Histogram Equalization)** - Enhances image contrast
-2. **Gaussian Blur** - Applies blur effect
-3. **Adaptive Threshold** - Binary threshold with local adaptation
-4. **Invert Colors** - Inverts image colors
+### Effects:
+1. **Posterize** – Reduces number of colors to create a flat, poster-like effect
+2. **Anime Effect** – Stylizes image to look like anime/cartoon art
+3. **Sepia Effect** – Applies warm brown tone for vintage look
+4. **Dream Soft Focus** – Adds soft blur for dreamy appearance
+5. **CLAHE** – Enhances image contrast and details
+6. **Threshold** – Converts image to black and white based on intensity
+7. **Mirror Effect** – Flips image horizontally to create reflection
 
-### New Effects:
-5. **Pencil Sketch** - Artistic pencil drawing effect
-6. **Posterize** - Reduces colors for pop-art style
 
 ## 🛠️ Technologies Used
 
@@ -61,12 +61,20 @@ random/
 ```
 
 3. **Check results** in `output_images/` folder:
-   - `filename_clahe.jpg` - CLAHE enhanced
-   - `filename_blurred.jpg` - Gaussian blur
-   - `filename_threshold.jpg` - Adaptive threshold
-   - `filename_inverted.jpg` - Inverted colors
-   - `filename_sketch.jpg` - Pencil sketch
-   - `filename_posterize.jpg` - Posterized
+
+   * `filename_posterize.jpg` - Posterize effect
+   * `filename_anime.jpg` - Anime style effect
+   * `filename_sepia.jpg` - Sepia vintage effect
+   * `filename_dreamsoft.jpg` - Dream soft focus effect
+   * `filename_clahe.jpg` - CLAHE contrast enhancement
+   * `filename_threshold.jpg` - Black & white threshold
+   * `filename_mirror.jpg` - Mirror (horizontal flip) effect
+
+## Git Hygiene (Important)
+
+Do not commit virtual environments.
+
+This repository’s `.gitignore` ignores `.venv/`, `venv/`, and `env/` to prevent accidentally pushing large binary files (which GitHub will reject).
 
 ## 🔄 GitHub Actions CI/CD
 
@@ -85,10 +93,10 @@ The pipeline automatically runs on every push:
 
 ## 👥 Group Members
 
-- [Member 1 Name] - [Role]
-- [Member 2 Name] - [Role]
-- [Member 3 Name] - [Role]
-- [Member 4 Name] - [Role]
+* **Sean Villamayor** – Image Processing Lead
+* **Karl Del Carmen** – DevOps Engineer
+* **Jhan Rhey Magsakay** – Tester
+* **Carlo Estacio** – Documenter/Presenter
 
 ---
 
