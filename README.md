@@ -70,6 +70,11 @@ random/
    * `filename_threshold.jpg` - Black & white threshold
    * `filename_mirror.jpg` - Mirror (horizontal flip) effect
 
+## Git Hygiene (Important)
+
+Do not commit virtual environments.
+
+This repository’s `.gitignore` ignores `.venv/`, `venv/`, and `env/` to prevent accidentally pushing large binary files (which GitHub will reject).
 
 ## 🔄 GitHub Actions CI/CD
 
