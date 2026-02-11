@@ -2,72 +2,72 @@ name: Image Processing CI
 
 on:
   push:
-    branches: [ main, master, commit-carlo ]
+    branches: [main, master, add-two-effects-jr]  # branch name
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]  # Pull request triggers for main or master
 
 jobs:
   test-and-process:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Specifies the environment to run the job on (Ubuntu)
     permissions:
-      contents: write
+      contents: write  # Permission to write to the repository
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token to interact with repository
+        fetch-depth: 0  # Fetch the full history for the repository (needed for checking changes)
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.10'  # Specify Python version for the environment
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        python -m pip install --upgrade pip  # Ensure pip is up to date
+        pip install -r requirements.txt  # Install dependencies listed in requirements.txt
 
     - name: Clean output directory (delete old outputs)
       run: |
         echo "🗑️ Cleaning output directory..."
-        rm -rf output_images/*
+        rm -rf output_images/*  # Remove any existing output images
         echo "✅ Old outputs deleted"
 
     - name: Ensure output directory exists
       run: |
-        mkdir -p output_images
+        mkdir -p output_images  # Make sure the output directory exists before saving files
         echo "Output directory ready"
 
-    - name: Process images with 6 effects
+    - name: Process images with 7 effects
       run: |
-        echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold"
-        python image_processor.py
+        echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold, Mirror"
+        python image_processor.py  # This will process the images with the specified effects (including mirror)
 
     - name: Run tests & display technique summary
       run: |
         echo "=== Running Technique Summary Tests ==="
-        python -m pytest -v -s tests/test_image_processing.py
+        python -m pytest -v -s tests/test_image_processing.py  # Run the test script to check if effects are applied correctly
 
     - name: Display processing results
       run: |
         echo "=== Processed Images ==="
-        ls -lh output_images/ || echo "No images processed"
+        ls -lh output_images/ || echo "No images processed"  # List the files in the output directory to confirm image generation
         echo ""
-        echo "Total files: $(ls output_images/ | wc -l)"
+        echo "Total files: $(ls output_images/ | wc -l)"  # Count the number of processed images
 
     - name: Commit and push processed images back to GitHub
       run: |
-        git config --global user.name "GitHub Actions Bot"
-        git config --global user.email "actions@github.com"
-        git add output_images/
-        git diff --staged --quiet || git commit -m "🤖 Auto-update: Processed images from workflow"
-        git push origin HEAD:commit-carlo
+        git config --global user.name "GitHub Actions Bot"  # Set GitHub Actions Bot as the committer
+        git config --global user.email "actions@github.com"  # Set the email for commits
+        git add output_images/  # Add processed images to Git staging area
+        git diff --staged --quiet || git commit -m "🤖 Auto-update: Processed images from workflow"  # Commit changes if there are any new images
+        git push origin HEAD:add-two-effects-jr  # Push the changes to the `add-two-effects-jr` branch
 
     - name: Upload processed images
       uses: actions/upload-artifact@v4
       with:
-        name: processed-images
-        path: output_images/
-        if-no-files-found: warn
+        name: processed-images  # Name for the artifact
+        path: output_images/  # Path to the processed images directory
+        if-no-files-found: warn  # If no files are found, issue a warning
