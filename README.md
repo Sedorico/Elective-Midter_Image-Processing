@@ -88,10 +88,10 @@ The pipeline automatically runs on every push:
 
 ## 👥 Group Members
 
-- [Member 1 Name] - [Role]
-- [Member 2 Name] - [Role]
-- [Member 3 Name] - [Role]
-- [Member 4 Name] - [Role]
+* **Sean Villamayor** – Image Processing Lead
+* **Karl Del Carmen** – DevOps Engineer
+* **Jhan Rhey Magsakay** – Tester
+* **Carlo Estacio** – Documenter/Presenter
 
 ---
 
