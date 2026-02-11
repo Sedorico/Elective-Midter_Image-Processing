@@ -2,9 +2,9 @@ name: Image Processing CI
 
 on:
   push:
-    branches: [main, master, add-two-effects-jr]  # branch name
+    branches: [main, master]  # Changed branch name to `main`
   pull_request:
-    branches: [main, master]  # Pull request triggers for main or master
+    branches: [main, master]  # Pull request triggers for `main` or `master`
 
 jobs:
   test-and-process:
@@ -63,7 +63,7 @@ jobs:
         git config --global user.email "actions@github.com"  # Set the email for commits
         git add output_images/  # Add processed images to Git staging area
         git diff --staged --quiet || git commit -m "🤖 Auto-update: Processed images from workflow"  # Commit changes if there are any new images
-        git push origin HEAD:add-two-effects-jr  # Push the changes to the `add-two-effects-jr` branch
+        git push origin HEAD:main  # Changed to push to the `main` branch
 
     - name: Upload processed images
       uses: actions/upload-artifact@v4
