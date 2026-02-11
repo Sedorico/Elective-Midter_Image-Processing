@@ -2,7 +2,7 @@ import cv2
 import os
 import numpy as np
 
-# ------------------------- Directories -------------------------
+# ------------------------- Absolute Paths -------------------------
 # Set the paths for the input and output folders
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the current file's path
 INPUT_DIR = os.path.join(BASE_DIR, "input_images")     # Input folder with the original images
@@ -45,8 +45,8 @@ def dream_soft_focus(img):
     blurred = cv2.GaussianBlur(img, (21, 21), 0)  # Apply a Gaussian blur
     return cv2.addWeighted(img, 0.7, blurred, 0.3, 0)  # Blend the blurred and original images
 
-# Apply realistic anime style using edges, smoothing, and color quantization
-def anime_style_realistic(img, k=8):
+# Anime-style effect using edge detection, bilateral filtering, and color quantization
+def anime_style(img, k=8):
     """
     Makes the image look like anime by applying edge detection, 
     smoothing, and reducing the number of colors.
@@ -98,7 +98,7 @@ def mirror_effect(img):
 def process_images():
     effects = {
         "_posterize": posterize,      # Apply posterize effect
-        "_anime": anime_style_realistic,  # Apply realistic anime effect
+        "_anime": anime_style,        # Apply realistic anime effect
         "_sepia": sepia_process,      # Apply sepia effect
         "_dream": dream_soft_focus,   # Apply dreamy soft focus effect
         "_clahe": clahe_process,      # Apply CLAHE effect
