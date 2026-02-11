@@ -1,8 +1,10 @@
+name: Image Processing and Testing
+
 on:
   push:
-    branches: [ main, master, add-two-effects-jr ]
+    branches: [main, master, add-two-effects-jr]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   test-and-process:
@@ -38,15 +40,15 @@ jobs:
         mkdir -p output_images
         echo "Output directory ready"
 
-    - name: Process images with 6 effects
+    - name: Process images with 8 effects
       run: |
-        echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold"
-        python image_processor.py
+        echo "🎨 Applying effects: Posterize, Anime, Sepia, Dream, CLAHE, Threshold, Retro, Mirror"
+        python image_processor.py  # Ensure the script includes all 8 effects now
 
     - name: Run tests & display technique summary
       run: |
         echo "=== Running Technique Summary Tests ==="
-        python -m pytest -v -s tests/test_image_processing.py
+        python -m pytest -v -s tests/test_image_processing.py  # Ensure the tests are updated for the new effects
 
     - name: Display processing results
       run: |
