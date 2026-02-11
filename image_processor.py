@@ -50,26 +50,7 @@ def anime_effect(img):
     color = cv2.bilateralFilter(img, 9, 250, 250)
     return cv2.bitwise_and(color, color, mask=edges)
 
-# New effects
-
-def retro_filter(img):
-    # Convert to a more vintage look
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB for color manipulation
-    img = cv2.addWeighted(img, 0.6, np.zeros_like(img), 0.4, 50)  # Add a warm tint to the image
-
-    # Add noise
-    noise = np.random.normal(0, 10, img.shape).astype(np.uint8)
-    img = cv2.add(img, noise)
-
-    # Apply vignette effect
-    rows, cols = img.shape[:2]
-    X_resultant_kernel = cv2.getGaussianKernel(cols, cols / 5)
-    Y_resultant_kernel = cv2.getGaussianKernel(rows, rows / 5)
-    resultant_kernel = Y_resultant_kernel * X_resultant_kernel.T
-    mask = 255 * resultant_kernel / np.linalg.norm(resultant_kernel)
-    img = cv2.filter2D(img, -1, mask)
-
-    return img
+# New effect (Mirror)
 
 def mirror_effect(img):
     # Create the mirror effect by flipping the image horizontally
@@ -89,8 +70,7 @@ def process_images():
         "_dream": dream_soft_focus,
         "_clahe": clahe_process,
         "_threshold": adaptive_threshold_process,
-        "_retro": retro_filter,   # Added Retro Filter
-        "_mirror": mirror_effect   # Added Mirror Effect
+        "_mirror": mirror_effect  # Added Mirror effect
     }
 
     new_files_created = 0
